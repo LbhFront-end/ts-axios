@@ -8,8 +8,8 @@ interface Interceptors {
   response: InterceptorManager<AxiosResponse>
 }
 
-interface PromiseChain {
-  resolved: ResolvedFn | ((config: AxiosRequestConfig) => AxiosPromise)
+interface PromiseChain<T> {
+  resolved: ResolvedFn<T> | ((config: AxiosRequestConfig) => AxiosPromise)
   rejected?: RejectedFn
 }
 
@@ -33,7 +33,7 @@ export default class Axios {
       config = url
     }
 
-    const chain: PromiseChain[] = [
+    const chain: PromiseChain<any>[] = [
       {
         resolved: dispatchRequest,
         rejected: undefined
