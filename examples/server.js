@@ -37,6 +37,8 @@ registerInterceptorRouter()
 
 registerConfigRouter()
 
+registerCancelRouter()
+
 app.use(router)
 
 const port = process.env.PORT || 3000
