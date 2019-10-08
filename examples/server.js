@@ -4,6 +4,7 @@ const webpack = require('webpack')
 const webpackDevMiddleware = require('webpack-dev-middleware')
 const webpackHotMiddleware = require('webpack-hot-middleware')
 const WebpackConfig = require('./webpack.config')
+const multipart = require('connect-multiparty')
 
 const app = express()
 const router = express.Router()
@@ -17,12 +18,23 @@ app.use(webpackDevMiddleware(compiler, {
   }
 }))
 
+app.use(express.static(__dirname, {
+  setHeaders(res) {
+    res.cookie('XSRF-TOKEN-D', '1234abc')
+  }
+}))
+
+
 app.use(webpackHotMiddleware(compiler))
 
 app.use(express.static(__dirname))
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+
+app.use(multipart({
+  uploadDir: path.resolve(__dirname, 'upload-file')
+}))
 
 
 registerSimpleRouter()
@@ -38,6 +50,8 @@ registerInterceptorRouter()
 registerConfigRouter()
 
 registerCancelRouter()
+
+registerMoreRouter()
 
 app.use(router)
 
