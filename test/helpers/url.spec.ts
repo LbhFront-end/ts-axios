@@ -1,4 +1,4 @@
-import { buildURL } from './../../src/helpers/url'
+import { buildURL, isAbsoluteURL } from './../../src/helpers/url'
 
 describe('helpers:url', () => {
   describe('buildURL', () => {
@@ -41,12 +41,68 @@ describe('helpers:url', () => {
       ).toBe('/foo?foo=' + encodeURI('{"bar":"baz"}'))
     })
 
+    test('should support date params', () => {
+      const date = new Date()
+
+      expect(
+        buildURL('/foo', {
+          date
+        })
+      ).toBe('/foo?date=' + date.toISOString())
+    })
+
+    test('should support array params', () => {
+      expect(
+        buildURL('/foo', {
+          foo: ['bar', 'baz']
+        })
+      ).toBe('/foo?foo[]=bar&foo[]=baz')
+    })
+
     test('should support special char params', () => {
       expect(
         buildURL('/foo', {
           foo: '@:$, '
         })
       ).toBe('/foo?foo=@:$,+')
+    })
+
+    test('should support existing params', () => {
+      expect(
+        buildURL('/foo?foo=bar', {
+          bar: 'baz'
+        })
+      ).toBe('/foo?foo=bar&bar=baz')
+    })
+
+    test('should correct discard url hash mark', () => {
+      expect(
+        buildURL('/foo?foo=bar#hash', {
+          query: 'baz'
+        })
+      ).toBe('/foo?foo=bar&query=baz')
+    })
+
+    test('should use serializer if provided', () => {
+      const serializer = jest.fn(() => {
+        return 'foo=bar'
+      })
+      const params = { foo: 'bar' }
+      expect(buildURL('/foo', params, serializer)).toBe('/foo?foo=bar')
+      expect(serializer).toHaveBeenCalled()
+      expect(serializer).toHaveBeenCalledWith(params)
+    })
+
+    test('should support URLSearchParams', () => {
+      expect(buildURL('/foo', new URLSearchParams('bar=baz'))).toBe('/foo?bar=baz')
+    })
+  })
+
+  describe('isAbsoluteURL', () => {
+    test('should return true if URL begins with valid sheme name', () => {
+      expect(isAbsoluteURL('https://api.github.com/users')).toBeTruthy()
+      expect(isAbsoluteURL('custome-scheme-v1.0://example.com/')).toBeTruthy()
+      expect(isAbsoluteURL('https://api.github.com/users')).toBeTruthy()
     })
   })
 })
