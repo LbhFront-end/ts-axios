@@ -1,5 +1,7 @@
 export function getAjaxRequest(): Promise<JasmineAjaxRequest> {
-  return new Promise(resolve => {
-    setTimeout(() => resolve(jasmine.Ajax.requests.mostRecent()), 0)
+  return new Promise(function(resolve) {
+    setTimeout(() => {
+      return resolve(jasmine.Ajax.requests.mostRecent())
+    }, 0)
   })
 }

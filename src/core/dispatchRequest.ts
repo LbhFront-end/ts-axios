@@ -1,6 +1,6 @@
 import { AxiosRequestConfig, AxiosPromise } from '../types'
 import { buildURL, isAbsoluteURL, combineURL } from './../helpers/url'
-import { flatternHeaders } from '../helpers/headers'
+import { flattenHeaders } from '../helpers/headers'
 import { AxiosResponse } from './../types/index'
 import xhr from './xhr'
 import transform from './transform'
@@ -16,7 +16,7 @@ export default function dispatchRequest(config: AxiosRequestConfig): AxiosPromis
 function processConfig(config: AxiosRequestConfig): void {
   config.url = transformURL(config)
   config.data = transform(config.data, config.headers, config.transformRequest)
-  config.headers = flatternHeaders(config.headers, config.method!)
+  config.headers = flattenHeaders(config.headers, config.method!)
 }
 
 export function transformURL(config: AxiosRequestConfig): string {

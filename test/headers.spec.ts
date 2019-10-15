@@ -1,4 +1,4 @@
-import axios from './../src/index'
+import axios from '../src/index'
 import { getAjaxRequest } from './helper'
 
 function testHeaderValue(headers: any, key: string, val?: string): void {
@@ -32,6 +32,7 @@ describe('headers', () => {
 
   test('should use default common headers', () => {
     const headers = axios.defaults.headers.common
+
     axios('/foo')
 
     return getAjaxRequest().then(request => {
@@ -70,7 +71,7 @@ describe('headers', () => {
     })
   })
 
-  test('should preserve content-type if data is false', () => {
+  it('should preserve content-type if data is false', () => {
     axios.post('/foo', false)
 
     return getAjaxRequest().then(request => {
@@ -78,7 +79,7 @@ describe('headers', () => {
     })
   })
 
-  test('should remove content-type is data is FormData', () => {
+  test('should remove content-type if data is FormData', () => {
     const data = new FormData()
     data.append('foo', 'bar')
 
